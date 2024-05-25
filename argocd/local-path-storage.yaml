@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: local-path-storage
+spec:
+  destination:
+    name: 'in-cluster'
+    namespace: 'local-path-storage'
+  source:
+    path: manifests/local-path-provisioner/overlays/danglindingo
+    repoURL: 'https://github.com/ccrow42/busybeagle'
+    targetRevision: HEAD
+  project: default
+  syncPolicy:
+    automated: {}
+  
