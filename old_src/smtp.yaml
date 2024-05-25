@@ -1,0 +1,41 @@
+---
+ apiVersion: apps/v1
+ kind: Deployment
+ metadata:
+   name: smtp-deployment
+   labels:
+     app: smtp
+ spec:
+   replicas: 1
+   selector:
+      matchLabels:
+        app: smtp
+   template:
+     metadata:
+       labels:
+         app: smtp
+
+     spec:
+      containers:
+         - name: smtp
+           image: pure/smtp-relay
+           env:
+             - name: SMTP_HOSTNAME
+               value: "mail.busybeagleplex.com"
+             - name: RELAY_NETWORKS
+               value: "0.0.0.0/0"
+           ports:
+             - containerPort: 25
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: smtp-service
+spec:
+  selector:
+    app: smtp
+  ports:
+  - protocol: TCP
+    port: 25
+    targetPort: 25
+  type: NodePort

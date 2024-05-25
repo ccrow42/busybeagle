@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: default
+  name: varken-svc
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  namespace: default
+  name: varken-svc
+subsets:
+  - addresses:
+    - ip: 192.168.0.242
+    ports:
+    - port: 3000
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: ingress-varken
+  namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
+    kubernetes.io/ingress.class: nginx
+
+spec:
+  tls:
+    - hosts:
+        - varken.humpingdog.lan
+      secretName: varken-tls
+  rules:
+    - host: varken.humpingdog.lan
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: varken-svc
+                port:
+                  number: 3000
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: external-varken-ingress
+  namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+    - hosts:
+        - varken.busybeagleplex.com
+      secretName: external-varken-tls
+  rules:
+    - host: varken.busybeagleplex.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: varken-svc
+                port:
+                  number: 3000
+

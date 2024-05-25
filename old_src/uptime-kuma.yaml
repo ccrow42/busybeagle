@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cc-uptime-kuma
+  labels:
+    app: cc-uptime-kuma
+spec:
+  ports:
+  - name: "80"
+    port: 80
+    targetPort: 3001
+  selector:
+    app: cc-uptime-kuma
+    tier: frontend
+  type: NodePort
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: cc-uptime-kuma
+  labels:
+    app: cc-uptime-kuma
+spec:
+  selector:
+    matchLabels:
+      app: cc-uptime-kuma
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: cc-uptime-kuma
+        tier: frontend
+    spec:
+      containers:
+      - image: louislam/uptime-kuma:1
+        name: cc-uptime-kuma
+        env:
+        ports:
+        - containerPort: 3001
+          name: cc-uptime-kuma
+        volumeMounts:
+        - name: cc-uptime-kuma
+          mountPath: /app-data
+      volumes:
+      - name: cc-uptime-kuma
+        hostPath:
+          path: /opt/k8s/uptime/app-data
