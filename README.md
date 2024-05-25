@@ -58,4 +58,9 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 
 #### Step 4 - Install ArgoCD Applications
 
+```bash
+kubectl apply -f https://raw.githubusercontent.com/ccrow42/busybeagle/main/argocd/busybeagle.yaml
+kubectl apply -f https://raw.githubusercontent.com/ccrow42/busybeagle/main/argocd/cert-manager.yaml
+kubectl apply -f https://github.com/ccrow42/busybeagle/blob/main/argocd/local-path-storage.yaml
+```
 
