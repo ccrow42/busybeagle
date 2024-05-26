@@ -65,3 +65,10 @@ kubectl -n argocd apply -f https://raw.githubusercontent.com/ccrow42/busybeagle/
 kubectl -n argocd apply -f https://github.com/ccrow42/busybeagle/blob/main/argocd/local-path-storage.yaml
 ```
 
+**Note:** It is possible to install the above applications using kustomize directly. After downloading this repo:
+
+For example:
+
+```bash
+kubectl apply -k manifests/busybeagle/overlays/danglindingo
+```
